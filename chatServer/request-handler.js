@@ -10,7 +10,6 @@ var connection = mysql.createConnection({
   database : 'chat'
 });
 
-connection.connect();
 // connection.end();
 // connection.connect();
 
@@ -29,11 +28,9 @@ connection.connect();
 // connection.end();
 
 
+var holder={};
 
 
-
-//Where we store our messages
-var messages;
 
 var sendResponse = function(request,response,sendMe,contentType,status) {
   status = status || 200;
@@ -41,44 +38,65 @@ var sendResponse = function(request,response,sendMe,contentType,status) {
   response.writeHeader(status,{'Content-Type': contentType});
   // response.write();
   response.end(sendMe);
+  connection.end();
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-var getUserid = function (username) {
-  var user;
-  connection.query("SELECT user_id from users WHERE username='" + username + "'", function (err, rows, fields) {
+var getUserid = function (newMessage) {
+  connection.query("SELECT user_id from users WHERE username='" + newMessage.username + "'", function (err, rows, fields) {
     if (err) throw err;
     if (rows[0]){
-      user = rows[0].user_id;
+      newMessage.user_id = rows[0].user_id;
+      // console.log("existing user id is: ",user);
+      getRoomid(newMessage);
     } else {
-      connection.query("INSERT into users (username) values ('" + username + "')", function (err,result) {
+      connection.query("INSERT into users (username) values ('" + newMessage.username + "')", function (err,result) {
         if (err) throw err;
-        user = result.insertId;
+        newMessage.user_id = result.insertId;
+        // console.log("new user id is: ",user);
+        getRoomid(newMessage);
       });
     }
   });
-  return user;
 };
 
-var getRoomid = function (roomname){
-  var room;
-  connection.query("SELECT room_id from rooms WHERE roomname='" + roomname + "'", function (err, rows, fields) {
+var getRoomid = function (newMessage){
+  connection.query("SELECT room_id from rooms WHERE roomname='" + newMessage.roomname + "'", function (err, rows, fields) {
     if (err) throw err;
     if (rows[0]){
-      room = rows[0].room_id;
+      newMessage.room_id = rows[0].room_id;
+      insertMessage(newMessage);
     } else {
-      connection.query("INSERT into rooms (roomname) values(" + roomname + ")", function (err, result) {
+      connection.query("INSERT into rooms (roomname) values ('" + newMessage.roomname + "')", function (err, result) {
         if (err) throw err;
-         room = result.insertId;
+        newMessage.room_id = result.insertId;
+        insertMessage(newMessage);
       });
     }
   });
-  return room;
 };
 
- var handleRequest = function(request, response) {
+var insertMessage = function (newMessage) {
+  var query = "INSERT INTO messages (room_id, user_id, text) VALUES (";
+  query += newMessage.room_id + " , " + newMessage.user_id + " , ' " + newMessage.text + " ' )";
+
+  console.log ("Here's the query we're running in mysql: ",query);
+
+  connection.query(query, function(err, rows, fields) {
+    // "INSERT into messages (text, user_id, room_id) values ('" + newMessage.text + "')", function(err, rows, fields) {
+    // "INSERT into messages set ?""{user_id:}
+    if (err) throw err;
+    sendResponse(holder.request, holder.response, '', 'application/json', 201);
+    // connection.end();
+  });
+};
+
+var handleRequest = function(request, response) {
+  holder.request=request;
+  holder.response=response;
+
   var toSend = "";
   var statusCode= 404;
   var urlObject = url.parse(request.url);
@@ -92,12 +110,12 @@ var getRoomid = function (roomname){
   if (requestURL[1] === 'classes') {
     if (request.method === "GET"){
 
+      connection.connect();
 
       connection.query("SELECT * from messages", function(err, rows, fields) {
         if (err) throw err;
         sendResponse(request, response, JSON.stringify(rows), 'application/json');
         console.log('Heres what we sent: ', rows);
-        // connection.end();
       });
     }
 
@@ -112,28 +130,14 @@ var getRoomid = function (roomname){
       });
 
       request.on('end', function(){
+        connection.connect();
         var newMessage = JSON.parse(fullbody);
 
-        console.log("This is what we got from a post request ", fullbody);//debugging
+        // console.log("This is what we got from a post request ", fullbody);//debugging
 
         //Get user_id or create user_id
-        newMessage.user_id = getUserid(newMessage.username);
+        getUserid(newMessage);
 
-        //Get room_id or create room_id
-        newMessage.room_id = getRoomid(newMessage.roomname);
-
-        var query = "INSERT INTO messages (room_id, user_id, text) VALUES (";
-        query += newMessage.room_id + " , " + newMessage.user_id + " , ' " + newMessage.text + " ' )";
-
-        console.log (query);
-
-        connection.query(query, function(err, rows, fields) {
-          // "INSERT into messages (text, user_id, room_id) values ('" + newMessage.text + "')", function(err, rows, fields) {
-          // "INSERT into messages set ?""{user_id:}
-          if (err) throw err;
-          sendResponse(request, response, '', 'application/json', 201);
-          // connection.end();
-        });
       });
     }
   }
