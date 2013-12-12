@@ -1,3 +1,4 @@
+-- DROP DATABASE chat;
 -- CREATE DATABASE chat;
 
 USE chat;
@@ -37,7 +38,7 @@ DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `messages` (
   `id` TINYINT NULL AUTO_INCREMENT DEFAULT NULL,
-  `user_user_id` TINYINT NULL,
+  `user_id` TINYINT NULL,
   `room_id` TINYINT NULL DEFAULT NULL,
   `text` MEDIUMTEXT NULL DEFAULT NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
@@ -75,7 +76,7 @@ CREATE TABLE `befriended` (
 -- Foreign Keys
 -- ---
 
-ALTER TABLE `messages` ADD FOREIGN KEY (user_user_id) REFERENCES `users` (`user_id`);
+ALTER TABLE `messages` ADD FOREIGN KEY (user_id) REFERENCES `users` (`user_id`);
 ALTER TABLE `messages` ADD FOREIGN KEY (room_id) REFERENCES `rooms` (`id`);
 ALTER TABLE `befriended` ADD FOREIGN KEY (user_id) REFERENCES `users` (`user_id`);
 ALTER TABLE `befriended` ADD FOREIGN KEY (friend_id) REFERENCES `users` (`user_id`);
