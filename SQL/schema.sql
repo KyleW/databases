@@ -1,5 +1,5 @@
 -- DROP DATABASE chat;
--- CREATE DATABASE chat;
+CREATE DATABASE chat;
 
 USE chat;
 
@@ -37,12 +37,12 @@ CREATE TABLE `users` (
 DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `messages` (
-  `id` TINYINT NULL AUTO_INCREMENT DEFAULT NULL,
+  `message_id` TINYINT NULL AUTO_INCREMENT DEFAULT NULL,
   `user_id` TINYINT NULL,
   `room_id` TINYINT NULL DEFAULT NULL,
   `text` MEDIUMTEXT NULL DEFAULT NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`message_id`)
 );
 
 -- ---
@@ -53,9 +53,9 @@ CREATE TABLE `messages` (
 DROP TABLE IF EXISTS `rooms`;
     
 CREATE TABLE `rooms` (
-  `id` TINYINT NULL AUTO_INCREMENT,
+  `room_id` TINYINT NULL AUTO_INCREMENT,
   `roomname` VARCHAR(30),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`room_id`)
 );
 
 -- ---

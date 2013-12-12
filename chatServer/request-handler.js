@@ -10,6 +10,8 @@ var connection = mysql.createConnection({
   database : 'chat'
 });
 
+connection.connect();
+// connection.end();
 // connection.connect();
 
 // connection.query("INSERT into users (username) values ('testUser')", function(err, rows, fields) {
@@ -37,8 +39,8 @@ var sendResponse = function(request,response,sendMe,contentType,status) {
   status = status || 200;
   contentType = contentType || 'text/html';
   response.writeHeader(status,{'Content-Type': contentType});
-  response.write(sendMe);
-  response.end();
+  // response.write();
+  response.end(sendMe);
 };
 
 
@@ -60,6 +62,22 @@ var getUserid = function (username) {
   return user;
 };
 
+var getRoomid = function (roomname){
+  var room;
+  connection.query("SELECT room_id from rooms WHERE roomname='" + roomname + "'", function (err, rows, fields) {
+    if (err) throw err;
+    if (rows[0]){
+      room = rows[0].room_id;
+    } else {
+      connection.query("INSERT into rooms (roomname) values(" + roomname + ")", function (err, result) {
+        if (err) throw err;
+         room = result.insertId;
+      });
+    }
+  });
+  return room;
+};
+
  var handleRequest = function(request, response) {
   var toSend = "";
   var statusCode= 404;
@@ -74,14 +92,12 @@ var getUserid = function (username) {
   if (requestURL[1] === 'classes') {
     if (request.method === "GET"){
 
-      connection.connect();
 
       connection.query("SELECT * from messages", function(err, rows, fields) {
         if (err) throw err;
         sendResponse(request, response, JSON.stringify(rows), 'application/json');
         console.log('Heres what we sent: ', rows);
-
-        connection.end();
+        // connection.end();
       });
     }
 
@@ -96,25 +112,32 @@ var getUserid = function (username) {
       });
 
       request.on('end', function(){
-
         var newMessage = JSON.parse(fullbody);
 
-        connection.connect();
+        console.log("This is what we got from a post request ", fullbody);//debugging
 
         //Get user_id or create user_id
-        var user_id = getUserid(newMessage);
+        newMessage.user_id = getUserid(newMessage.username);
 
         //Get room_id or create room_id
-        var room_id = getRoomid(newMessage);
+        newMessage.room_id = getRoomid(newMessage.roomname);
 
-        connection.query("INSERT into messages (text) values ('" + newMessage.text + "')", function(err, rows, fields) {
+        var query = "INSERT INTO messages (room_id, user_id, text) VALUES (";
+        query += newMessage.room_id + " , " + newMessage.user_id + " , ' " + newMessage.text + " ' )";
+
+        console.log (query);
+
+        connection.query(query, function(err, rows, fields) {
+          // "INSERT into messages (text, user_id, room_id) values ('" + newMessage.text + "')", function(err, rows, fields) {
+          // "INSERT into messages set ?""{user_id:}
           if (err) throw err;
           sendResponse(request, response, '', 'application/json', 201);
-          connection.end();
+          // connection.end();
         });
       });
     }
   }
+
 
 ////////// SERVES STATIC FILES ////////////////////
 
