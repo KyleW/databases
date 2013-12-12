@@ -44,6 +44,22 @@ var sendResponse = function(request,response,sendMe,contentType,status) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+var getUserid = function (username) {
+  var user;
+  connection.query("SELECT user_id from users WHERE username='" + username + "'", function (err, rows, fields) {
+    if (err) throw err;
+    if (rows[0]){
+      user = rows[0].user_id;
+    } else {
+      connection.query("INSERT into users (username) values ('" + username + "')", function (err,result) {
+        if (err) throw err;
+        user = result.insertId;
+      });
+    }
+  });
+  return user;
+};
+
  var handleRequest = function(request, response) {
   var toSend = "";
   var statusCode= 404;
@@ -81,43 +97,21 @@ var sendResponse = function(request,response,sendMe,contentType,status) {
 
       request.on('end', function(){
 
-            connection.connect();
+        var newMessage = JSON.parse(fullbody);
 
-              //Get user_id or create user_id
+        connection.connect();
 
-              //Get room_id or create room_id
+        //Get user_id or create user_id
+        var user_id = getUserid(newMessage);
 
-              //Get the messages
-              connection.query("INSERT into users (username) values ('testUser')", function(err, rows, fields) {
-                if (err) throw err;
+        //Get room_id or create room_id
+        var room_id = getRoomid(newMessage);
 
-                // console.log('Inserted: ', rows[0]);
-              });
-
-              connection.query("SELECT * from users", function(err, rows, fields) {
-                if (err) throw err;
-
-                console.log('Inserted: ', rows[0]);
-              });
-
-              connection.end();
-
-
-        fs.readFile('messages.json', {encoding: 'utf8'},function(err, json){
-          if (err) {throw err;}
-          messages=JSON.parse(json) || {};
-          msgCount = messages.msgCount || 0;
-          messages.messages = messages.messages || {};
-          messages.messages[msgCount] = JSON.parse(fullbody);
-          messages.msgCount = msgCount + 1;
-          messages = JSON.stringify(messages);
-
-          fs.writeFile('messages.json', messages, function(err) {
-            if (err) {throw err;}
-          });
-          sendResponse(request, response, messages, 'application/json', 201);
+        connection.query("INSERT into messages (text) values ('" + newMessage.text + "')", function(err, rows, fields) {
+          if (err) throw err;
+          sendResponse(request, response, '', 'application/json', 201);
+          connection.end();
         });
-
       });
     }
   }
