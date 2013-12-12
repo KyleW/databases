@@ -1,0 +1,4 @@
+'{
+  "msgCount":0,
+  "messages":{}
+}'

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chatterbox</title>
+
+  <link rel="stylesheet" href="styles/styles.css">
+
+  <!-- external javascript -->
+
+    <!-- Externally hosted versions
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script> -->
+  
+  <script src="bower_components/jquery/jquery.min.js"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
+  <script src="scripts/config.js"></script>
+
+<!-- WITHOUT BACKBONE -->
+  <script src="scripts/app.js"></script>
+
+<!-- WITH BACKBONE -->
+<!--    
+    <script src="bower_components/backbone/backbone.js"></script>
+  
+    Models 
+    <script src="scripts/models/App.js"></script>
+    <script src="scripts/models/Message.js"></script>
+    <script src="scripts/models/MessageList.js"></script>
+
+    Views 
+    <script src="scripts/views/AppView.js"></script>
+    <script src="scripts/views/MessageView.js"></script>
+    <script src="scripts/views/MessageListView.js"></script>
+    <script src="scripts/main.js"></script>
+
+-->
+
+
+</head>
+<body>
+  <div id='heading'><h1>Chatterbox</h1> </div>
+  <div id='left'></div>
+  <div id='right'> 
+    <form> 
+      <span class='subtitle'>Add to the Chatter</span> 
+      <textarea class='newMsg' name='userText' value=''></textarea> 
+      <button class='submit' type='button'>Chatter</button> 
+    </form> 
+    <div id='roomLabel'> 
+      <span class='subtitle'>Current Room:</span><span class='currentRoom'></span></h3> 
+    </div> 
+    <div id='friendLabel'> 
+      <span class='subtitle'>Befriended:</span> 
+      <ul id='friendList'></ul> 
+    </div> 
+  </div>
+</body>
+</html>

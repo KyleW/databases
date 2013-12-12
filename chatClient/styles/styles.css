@@ -1,0 +1,190 @@
+/*changes to make
+Make sure username and room seem clickable
+Add a way to get back to lobby
+add frineds to befriended list
+add confirmation message
+add get messages on submit
+add fixed right col on scroll
+add messages slide in from top
+*/
+
+* {
+  font-family: 'Open Sans',monospace;
+  word-wrap: break-word;  
+  /*border: 4px black solid; debugging*/
+}
+
+body {
+    background: #0e5185;
+
+}
+
+#heading {
+  position: fixed;
+  margin-left: 55%;
+  text-align: right;
+  font-size: 3em;
+  margin-top: -4%;
+  margin-right:4%;
+}
+
+.subtitle {
+  font-size: 2em;
+  bottom-margin: 20px;
+}
+
+.clear {
+  clear:both;
+}
+
+.messageList {
+  float:left;
+  margin-top: 40px;
+  margin-left:2%;
+  width:47%;
+}
+
+#left {
+  float:left;
+  margin-top: 40px;
+  margin-left:2%;
+  width:47%;
+}
+
+#right {
+  position: fixed;
+  margin-left: 57%;
+  margin-top: 13%;
+  width: 45%;
+}
+
+form{
+  float:left;
+  margin-bottom: 80px;
+}
+
+textarea {
+  /*display: block;*/
+  /*margin-bottom: 30px;*/
+  /*margin: auto;*/
+/*  background-color: #4D5099;
+  height: 80px;
+  width:100%;*/
+  background: rgba(0,0,0,0.3);
+  height: 90px;
+  width: 100%;
+  padding: 5px 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size:12px;
+  color:white;
+  border-color: black;
+}
+
+button {
+  font-size: 16px;
+  text-align: center;
+  background-color: rgba(255,255,255,0.3);
+  /*color: black;*/
+  /*box-shadow:  inset 0 3px 5px rgba(255,255,255,0.3);*/
+  /*margin-left: 30px;*/
+}
+
+#roomLabel {
+  clear:left;
+}
+
+#friendLabel {
+  margin-top: 50px;
+  clear:left;
+}
+
+
+/* CSS FOR EACH MESSAGE */
+
+.message {
+  background: rgba(0,0,0,0.3);
+  height: 100px;
+  width: 100%;
+  margin: 10px;
+  padding: 5px 10px;
+}
+
+.username {
+  color: #8a9f00;
+  float: left;
+  height:15px;
+  width:190px;
+}
+
+.roomname {
+  float:right;
+  text-align: right;
+  color: black;
+  height: 15px;
+  font-size: 14px;
+  width:150px;
+}
+
+.text {
+  font-size:12px;
+  float: left;
+  clear: left;
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  height: 50px;
+  width:90%;
+}
+
+.createdAt {
+  clear:left;
+  float:right;
+  font-size: 14px;
+  text-align: right;
+}
+
+.updatedAt {
+  display:none;
+}
+
+.objectId {
+  display:none;
+}
+
+.friend {
+  font-weight: bolder;
+  color: rgb(209, 231, 42);
+}
+
+/*Old STYLES BELOW*/
+
+/*.nav .reset{
+  width:120px;
+  border-radius: 3px;
+  background-color: rgba(255,255,255,0.3);
+  color: black;
+  box-shadow:  inset 0 3px 5px rgba(255,255,255,0.3);
+  height:100px;
+  margin-left: 30px;
+  font-size: 16px;
+}*/
+
+/*.columnHeader {
+  height: 20px;
+  font-weight:800;
+  font-size: 16px;
+  margin: 10px 15px ;
+
+}
+
+.columnTitle {
+  display: inline;
+  height: 20px;
+}
+
+.columnSubtitle{
+  float:right;
+  height: 20px;
+}*/
