@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 });
 
 // connection.end();
-// connection.connect();
+connection.connect();
 
 // connection.query("INSERT into users (username) values ('testUser')", function(err, rows, fields) {
 //   if (err) throw err;
@@ -38,7 +38,7 @@ var sendResponse = function(request,response,sendMe,contentType,status) {
   response.writeHeader(status,{'Content-Type': contentType});
   // response.write();
   response.end(sendMe);
-  connection.end();
+  // connection.end();
 };
 
 
@@ -94,6 +94,7 @@ var insertMessage = function (newMessage) {
 };
 
 var handleRequest = function(request, response) {
+
   holder.request=request;
   holder.response=response;
 
@@ -109,9 +110,6 @@ var handleRequest = function(request, response) {
 
   if (requestURL[1] === 'classes') {
     if (request.method === "GET"){
-
-      connection.connect();
-
       connection.query("SELECT * from messages", function(err, rows, fields) {
         if (err) throw err;
         sendResponse(request, response, JSON.stringify(rows), 'application/json');
@@ -130,7 +128,6 @@ var handleRequest = function(request, response) {
       });
 
       request.on('end', function(){
-        connection.connect();
         var newMessage = JSON.parse(fullbody);
 
         // console.log("This is what we got from a post request ", fullbody);//debugging

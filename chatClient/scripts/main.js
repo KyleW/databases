@@ -1,9 +1,13 @@
-$(document).ready(function(){
-  var messageList =  new MessageList(testData);
+  var messageList =  new MessageList();
   var app = new App({messageList: messageList});
   var appView = new AppView({model:app});
-  $('body').html(appView.render());
+  messageList.fetch();
 
+
+
+
+$(document).ready(function(){
+  $('body').html(appView.render());
   setInterval(function() {
     messageList.fetch();
   },  10000);

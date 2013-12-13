@@ -20,12 +20,11 @@ var AppView = Backbone.View.extend({
     this.messageListView = new MessageListView({collection: this.model.get('messageList')});
     this.render();
   },
-  
+
   render: function(){
     this.$el.html(this.template(this.model.attributes));
     this.$el.append(this.messageListView.render());
     return this.$el;
-
   }
 
 });

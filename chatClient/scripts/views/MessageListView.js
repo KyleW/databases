@@ -4,13 +4,15 @@ var MessageListView=Backbone.View.extend({
   className: 'messageList',
 
   intialize: function(){
-      this.collection.on('add', function() {
+    this.collection.on('add', function() {
       this.render();
     },this);
   },
 
   render: function(){
-    return this.$el.append(this.collection.map(function(message){
-      new MessageView({model: message}).$el}));
+    this.collection.each(function(message){
+      this.$el.append(new MessageView({model: message}).render());
+    });
+    $('.messageList').html(this.$el);
   }
 });
